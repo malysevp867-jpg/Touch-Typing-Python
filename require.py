@@ -1,3 +1,4 @@
+#Texts taken from the fish-text.ru
 import requests 
 from deep_translator import MyMemoryTranslator 
 def requireText():

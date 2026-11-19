@@ -23,10 +23,7 @@ print(result)
 #print(text)
 
 chars = list(result)
-deleted_chars = {',',"'"}
-chars = [c for c in chars if c not in deleted_chars]
 print(chars)
-"""
 def on_press(key):
     print(f'You pressed: {key.char}')
 def on_release(key):
@@ -37,4 +34,3 @@ with keyboard.Listener(
     on_press=on_press,
     on_release=on_release) as listener:
     listener.join()
-"""
