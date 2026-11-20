@@ -15,14 +15,14 @@ def mainGui(text=None, language="en"):
     app.title("Touch Typing")
     app.geometry("1200x700")
     app.configure(fg_color="#000d21")
-    customFont = ctk.CTkFont(family="Poppins", size=20)
+    customFont = ctk.CTkFont(family="Poppins", size=32)
     app.resizable(False, False)
 
     # Creat a text box
     textBox = ctk.CTkTextbox(
         app,
-        width=700,
-        height=200,
+        width=900,
+        height=400,
         fg_color="#00183c",
         activate_scrollbars=False,
         font=customFont,
@@ -44,7 +44,7 @@ def mainGui(text=None, language="en"):
     numberOfLetter = 0
     numberOfErrors = 0
     chars = list(text)
-
+ 
     def checkKey(event):
         nonlocal numberOfLetter
         nonlocal numberOfErrors
@@ -70,8 +70,7 @@ def mainGui(text=None, language="en"):
             loadNewText(language)
 
     app.bind("<Key>", checkKey)
-
-    # Module to load new text
+ 
     def loadNewText(lang):
         nonlocal text, chars, numberOfLetter, numberOfErrors
         text = requireText(lang)
@@ -94,7 +93,6 @@ def mainGui(text=None, language="en"):
         else:
             print("Something went wrong!")
 
-    # Module to switch toggle of languages
     switchText = "Language: English"
 
     def switchToggle():
