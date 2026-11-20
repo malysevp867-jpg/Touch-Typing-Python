@@ -1,0 +1,6 @@
+customtkinter==6.0.0
+deep_translator==1.11.4
+pyglet==2.1.19
+pynput==1.8.2
+Requests==2.34.2
+pathlib==26.3
