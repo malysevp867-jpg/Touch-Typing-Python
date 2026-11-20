@@ -1,6 +1,7 @@
 import customtkinter as ctk
 import pyglet
 from pathlib import Path
+from require import requireText
 
 def mainGui(text, language):
     mainFile = Path(__file__).resolve().parent
@@ -13,6 +14,7 @@ def mainGui(text, language):
     customFont = ctk.CTkFont(family="Poppins",size=20)
     app.resizable(False, False)
 
+    #Creat a text boxx
     textBox = ctk.CTkTextbox(
         app,
         width=700,
@@ -31,10 +33,13 @@ def mainGui(text, language):
     textBox.tag_config("correct", foreground = "#00ff4c")
     textBox.tag_config("wrong", foreground = "#ff0000")
 
+    #Module to check keys
     numberOfLetter = 0
-    chars = list(text)
+    numberOfErrors = 0
+    chars = list(text)    
     def checkKey(event):
         nonlocal numberOfLetter
+        nonlocal numberOfErrors
         if not event.char:
             return
         if len(chars) > 0:
@@ -50,18 +55,36 @@ def mainGui(text, language):
                 chars.pop(0)
             else:
                 textBox.tag_add("wrong", startPpos, endPos)
-                print("Wrong!")  
+                print("Wrong!")
+                numberOfErrors += 1
+        if len(chars) == 0:
+            loadNewText(language)
     app.bind("<Key>", checkKey)
 
+    # Module to load new text
+    def loadNewText(language):
+        nonlocal text, chars, numberOfLetter, numberOfErrors
+        text = requireText(language)
+        chars = list(text)
+        numberOfLetter = 0
+        numberOfErrors = 0
+        textBox.configure(state="normal")
+        textBox.delete("1.0", "end")
+        textBox.insert("1.0", text, "center")
+        textBox.configure(state="disabled")
+
+    #Module to switch toggle of languages
     switchText = "Language: "
     def switchToggle():
         nonlocal language
         if language == "en":
             language = "ru"
+            loadNewText(language)
             switch.configure(text="Язык: Русский") 
         elif language == "ru":
-            switch.configure(text="Language: English") 
             language = "en"
+            loadNewText(language)
+            switch.configure(text="Language: English")
         else:
             print("Something went wrong!")
     switchVar = ctk.StringVar(value="off")
