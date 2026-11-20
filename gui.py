@@ -3,7 +3,6 @@ import pyglet
 from pathlib import Path
 
 def mainGui(text, language):
-    chars = list(text)
     mainFile = Path(__file__).resolve().parent
     fontFile = mainFile / "fonts" / "RubikGlitch-Regular.ttf"
     pyglet.font.add_file(str(fontFile))
@@ -29,6 +28,30 @@ def mainGui(text, language):
     textBox.insert("1.0",text,"center")
     textBox.configure(state="disabled")
     textBox.pack(pady=30)
+    textBox.tag_config("correct", foreground = "#00ff4c")
+    textBox.tag_config("wrong", foreground = "#ff0000")
+
+    numberOfLetter = 0
+    chars = list(text)
+    def checkKey(event):
+        nonlocal numberOfLetter
+        if not event.char:
+            return
+        if len(chars) > 0:
+            letterNow = chars[0]
+            userPressed = event.char
+            startPpos = f"1.0 + {numberOfLetter}c"
+            endPos = f"1.0 + {numberOfLetter + 1}c"
+            if letterNow == userPressed:
+                textBox.tag_remove("wrong", startPpos, endPos)
+                textBox.tag_add("correct", startPpos, endPos)
+                numberOfLetter += 1
+                print("Correct!")
+                chars.pop(0)
+            else:
+                textBox.tag_add("wrong", startPpos, endPos)
+                print("Wrong!")  
+    app.bind("<Key>", checkKey)
 
     switchText = "Language: "
     def switchToggle():
