@@ -1,7 +1,7 @@
 #Texts taken from the fish-text.ru
 import requests 
 from deep_translator import MyMemoryTranslator 
-def requireText():
+def requireText(language):
     translator = MyMemoryTranslator (source="ru-RU",target="en-GB")
     url = "https://fish-text.ru/get"
     params = {
@@ -15,7 +15,12 @@ def requireText():
         result = data["text"]
     else:
         print("something went wrong!")
-    text = translator.translate(result)
-    return text
+    if language == "ru":
+        return result
+    elif language == "en":
+        text = translator.translate(result)
+        return text
+    else:
+        print("Something went wrong!")
 if __name__ == "__main__":
     requireText()
