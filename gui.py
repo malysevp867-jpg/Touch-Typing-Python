@@ -2,7 +2,7 @@ from pathlib import Path
 import customtkinter as ctk
 import pyglet
 from require import requireText
-
+import json
 
 def mainGui(text=None, language="en"):
     if text is None:
@@ -70,10 +70,10 @@ def mainGui(text=None, language="en"):
             loadNewText(language)
 
     app.bind("<Key>", checkKey)
- 
-    def loadNewText(lang):
+
+    def loadNewText(language):
         nonlocal text, chars, numberOfLetter, numberOfErrors
-        text = requireText(lang)
+        text = requireText(language)
         chars = list(text)
         numberOfLetter = 0
         numberOfErrors = 0
@@ -82,10 +82,32 @@ def mainGui(text=None, language="en"):
         textBox.insert("1.0", text, "center")
         textBox.configure(state="disabled")
 
+
+    def switchLanguage():
+        nonlocal language
+        with open("userSettings.json", "r", encoding="utf-8") as file:
+            loadedData = json.load(file)
+            language = loadedData["language"]
+        if language == "en":
+            loadedData["language"] = "ru"
+            with open("userSettings.json", "w", encoding="utf-8") as file:
+                json.dump(loadedData,file, ensure_ascii=False, indent=4)
+            language = "ru"
+            loadNewText(language)
+            switch.configure(text="Язык: Русский")
+        elif language == "ru":
+            loadedData["language"] = "en"
+            with open("userSettings.json", "w", encoding="utf-8") as file:
+                json.dump(loadedData,file, ensure_ascii=False, indent=4)
+            language = "en"
+            loadNewText(language)
+            switch.configure(text="Language: English")
+        else:
+            print("Something went wrong!")
+
     def precentOfErrors():
         totalChars = len(text)
         precent = round((numberOfErrors / totalChars) * 100, 1)
-
         if language == "en":
             precentLabel.configure(text=f"Percent of errors: {precent}%")
         elif language == "ru":
@@ -93,26 +115,17 @@ def mainGui(text=None, language="en"):
         else:
             print("Something went wrong!")
 
-    switchText = "Language: English"
-
-    def switchToggle():
-        nonlocal language
-        if language == "en":
-            language = "ru"
-            loadNewText(language)
-            switch.configure(text="Язык: Русский")
-        elif language == "ru":
-            language = "en"
-            loadNewText(language)
-            switch.configure(text="Language: English")
-        else:
-            print("Something went wrong!")
-
+    if language == "en":
+        switchText = "Language: English"
+    elif language == "ru":
+        switchText = "Язык: Русский"
+    else:
+        print("Something went wrong!")
     switchVar = ctk.StringVar(value="off")
     switch = ctk.CTkSwitch(
         app,
         text=switchText,
-        command=switchToggle,
+        command=switchLanguage,
         variable=switchVar,
         onvalue="on",
         offvalue="off",
@@ -120,7 +133,5 @@ def mainGui(text=None, language="en"):
     switch.pack(padx=10)
 
     app.mainloop()
-
-
 if __name__ == "__main__":
     mainGui()
