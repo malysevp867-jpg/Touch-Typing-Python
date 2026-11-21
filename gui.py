@@ -3,11 +3,11 @@ import customtkinter as ctk
 import pyglet
 from require import requireText
 import json
+import time
 
 def mainGui(text=None, language="en"):
     if text is None:
         text = requireText(language)
-
     mainFile = Path(__file__).resolve().parent
     fontFile = mainFile / "fonts" / "RubikGlitch-Regular.ttf"
     pyglet.font.add_file(str(fontFile))
@@ -37,19 +37,29 @@ def mainGui(text=None, language="en"):
     textBox.tag_config("correct", foreground="#00ff4c")
     textBox.tag_config("wrong", foreground="#ff0000")
 
-    precentLabel = ctk.CTkLabel(app, text="", font=customFont)
-    precentLabel.pack(padx=30)
 
     # Module to check keys
     numberOfLetter = 0
     numberOfErrors = 0
     chars = list(text)
- 
+    startTime = None
+
+    timeTypingLabel = ctk.CTkLabel(app, text="", font=customFont)
+    timeTypingLabel.pack(padx=10)
+    def timeLabel(timeOfTyping):
+        if language == "en":
+            labelText= f"Time of typing: {timeOfTyping}"
+        elif language == "ru":
+            labelText = f"Время печатанья: {timeOfTyping}" 
+        timeTypingLabel.configure(text=labelText)
+        
+
     def checkKey(event):
-        nonlocal numberOfLetter
-        nonlocal numberOfErrors
+        nonlocal numberOfLetter, numberOfErrors, startTime
         if not event.char:
             return
+        if startTime is None:      
+            startTime = time.time()
         if len(chars) > 0:
             letterNow = chars[0]
             userPressed = event.char
@@ -66,22 +76,25 @@ def mainGui(text=None, language="en"):
                 print("Wrong!")
                 numberOfErrors += 1
         if len(chars) == 0:
+            timeOfTyping = round(time.time() - startTime, 1)
+            timeLabel(timeOfTyping)
+            print(timeOfTyping)
             precentOfErrors()
             loadNewText(language)
 
     app.bind("<Key>", checkKey)
 
     def loadNewText(language):
-        nonlocal text, chars, numberOfLetter, numberOfErrors
+        nonlocal text, chars, numberOfLetter, numberOfErrors, startTime
         text = requireText(language)
         chars = list(text)
         numberOfLetter = 0
         numberOfErrors = 0
+        startTime = None
         textBox.configure(state="normal")
         textBox.delete("1.0", "end")
         textBox.insert("1.0", text, "center")
         textBox.configure(state="disabled")
-
 
     def switchLanguage():
         nonlocal language
@@ -105,6 +118,9 @@ def mainGui(text=None, language="en"):
         else:
             print("Something went wrong!")
 
+
+    precentLabel = ctk.CTkLabel(app, text="", font=customFont)
+    precentLabel.pack(padx=30)
     def precentOfErrors():
         totalChars = len(text)
         precent = round((numberOfErrors / totalChars) * 100, 1)
