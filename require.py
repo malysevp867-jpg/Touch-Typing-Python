@@ -15,6 +15,10 @@ def requireText(language):
         result = data["text"]
     else:
         print("something went wrong!")
+
+    if "—" in result:
+        response = requests.get(url, params=params)
+
     if language == "ru":
         return result
     elif language == "en":

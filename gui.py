@@ -1,9 +1,9 @@
 from pathlib import Path
 import customtkinter as ctk
 import pyglet
-from require import requireText
 import json
 import time
+from require import requireText
 
 def mainGui(text=None, language="en"):
     if text is None:
@@ -72,7 +72,6 @@ def mainGui(text=None, language="en"):
         if len(chars) == 0:
             timeOfTyping = round(time.time() - startTime, 1)
             timeLabel(timeOfTyping)
-            print(timeOfTyping)
             precentOfErrors()
             loadNewText(language)
     app.bind("<Key>", checkKey)
@@ -138,7 +137,7 @@ def mainGui(text=None, language="en"):
         onvalue="on",
         offvalue="off",
     )
-    switch.pack(padx=10)
+    switch.pack(padx=30)
 
     app.mainloop()
 if __name__ == "__main__":
