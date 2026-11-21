@@ -18,7 +18,6 @@ def mainGui(text=None, language="en"):
     customFont = ctk.CTkFont(family="Poppins", size=32)
     app.resizable(False, False)
 
-    # Creat a text box
     textBox = ctk.CTkTextbox(
         app,
         width=900,
@@ -37,8 +36,6 @@ def mainGui(text=None, language="en"):
     textBox.tag_config("correct", foreground="#00ff4c")
     textBox.tag_config("wrong", foreground="#ff0000")
 
-
-    # Module to check keys
     numberOfLetter = 0
     numberOfErrors = 0
     chars = list(text)
@@ -48,12 +45,11 @@ def mainGui(text=None, language="en"):
     timeTypingLabel.pack(padx=10)
     def timeLabel(timeOfTyping):
         if language == "en":
-            labelText= f"Time of typing: {timeOfTyping}"
+            labelText= f"Time of typing: {timeOfTyping} second"
         elif language == "ru":
-            labelText = f"Время печатанья: {timeOfTyping}" 
+            labelText = f"Время печатанья: {timeOfTyping} секунд" 
         timeTypingLabel.configure(text=labelText)
         
-
     def checkKey(event):
         nonlocal numberOfLetter, numberOfErrors, startTime
         if not event.char:
@@ -69,11 +65,9 @@ def mainGui(text=None, language="en"):
                 textBox.tag_remove("wrong", startPpos, endPos)
                 textBox.tag_add("correct", startPpos, endPos)
                 numberOfLetter += 1
-                print("Correct!")
                 chars.pop(0)
             else:
                 textBox.tag_add("wrong", startPpos, endPos)
-                print("Wrong!")
                 numberOfErrors += 1
         if len(chars) == 0:
             timeOfTyping = round(time.time() - startTime, 1)
@@ -81,7 +75,6 @@ def mainGui(text=None, language="en"):
             print(timeOfTyping)
             precentOfErrors()
             loadNewText(language)
-
     app.bind("<Key>", checkKey)
 
     def loadNewText(language):
@@ -117,7 +110,6 @@ def mainGui(text=None, language="en"):
             switch.configure(text="Language: English")
         else:
             print("Something went wrong!")
-
 
     precentLabel = ctk.CTkLabel(app, text="", font=customFont)
     precentLabel.pack(padx=30)
